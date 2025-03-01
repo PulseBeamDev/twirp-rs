@@ -21,7 +21,6 @@ impl prost_build::ServiceGenerator for ServiceGenerator {
 
         writeln!(buf, "pub use twirp;").unwrap();
         writeln!(buf).unwrap();
-        writeln!(buf, "pub const SERVICE_FQN: &str = \"/{service_fqn}\";").unwrap();
 
         //
         // generate the twirp server
@@ -29,6 +28,7 @@ impl prost_build::ServiceGenerator for ServiceGenerator {
         writeln!(buf, "#[twirp::async_trait::async_trait]").unwrap();
         writeln!(buf, "pub trait {} {{", service_name).unwrap();
         writeln!(buf, "    type Error;").unwrap();
+        writeln!(buf, "fn service_fqn(&self) -> &'static str {{ \"/{service_fqn}\" }}").unwrap();
         for m in &service.methods {
             writeln!(
                 buf,

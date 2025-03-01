@@ -17,7 +17,7 @@ pub mod service {
         }
     }
 }
-use service::haberdash::v1::{self as haberdash, MakeHatRequest, MakeHatResponse};
+use service::haberdash::v1::{self as haberdash, HaberdasherApi, MakeHatRequest, MakeHatResponse};
 
 async fn ping() -> &'static str {
     "Pong\n"
@@ -29,7 +29,7 @@ pub async fn main() {
     let middleware = twirp::tower::builder::ServiceBuilder::new()
         .layer(middleware::from_fn(request_id_middleware));
     let twirp_routes = Router::new()
-        .nest(haberdash::SERVICE_FQN, haberdash::router(api_impl))
+        .nest(api_impl.service_fqn(), haberdash::router(api_impl))
         .layer(middleware);
     let app = Router::new()
         .nest("/twirp", twirp_routes)

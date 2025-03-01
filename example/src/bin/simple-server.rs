@@ -12,7 +12,7 @@ pub mod service {
         }
     }
 }
-use service::haberdash::v1::{self as haberdash, MakeHatRequest, MakeHatResponse};
+use service::haberdash::v1::{self as haberdash, HaberdasherApi, MakeHatRequest, MakeHatResponse};
 
 async fn ping() -> &'static str {
     "Pong\n"
@@ -21,7 +21,7 @@ async fn ping() -> &'static str {
 #[tokio::main]
 pub async fn main() {
     let api_impl = HaberdasherApiServer {};
-    let twirp_routes = Router::new().nest(haberdash::SERVICE_FQN, haberdash::router(api_impl));
+    let twirp_routes = Router::new().nest(api_impl.service_fqn(), haberdash::router(api_impl));
     let app = Router::new()
         .nest("/twirp", twirp_routes)
         .route("/_ping", get(ping))
